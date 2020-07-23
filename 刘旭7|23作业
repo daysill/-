@@ -1,0 +1,87 @@
+GAME = { 
+//随机产生字母 
+randLetter: function() { 
+var arrLetter = new Array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", 
+"X", 
+"Y", "Z"); 
+//随机产生字母 
+var index = Math.floor(Math.random() * 26); 
+return arrLetter[index]; 
+}, 
+//随机字母颜色 
+randLetterColor: function() { 
+var arrLetterColor = new Array("Red", "Green", "#555", "Blue", "Black"); 
+var index = Math.floor(Math.random() * 4); 
+return arrLetterColor[index]; 
+}, 
+//随机字母大小 
+randLetterSize: function() { 
+var arrLetterSize = new Array("12px", "16px", "20px", "24px", "28px", "32px", "36px", "40px"); 
+var index = Math.floor(Math.random() * 7); 
+return arrLetterSize[index]; 
+}, 
+//创建DIV 
+divCreate: function(width, height, left, top, value) { 
+this.width = width; 
+this.height = height; 
+this.div = document.createElement("div"); 
+this.div.style.width = width; 
+this.div.style.height = height; 
+this.div.style.left = left; 
+this.div.style.top = top; 
+this.div.innerText = value; 
+this.div.style.color = this.randLetterColor(); 
+this.div.style.fontSize = this.randLetterSize(); 
+this.div.style.lineHeight = this.div.style.height; 
+this.div.style.textAlign = "center"; 
+this.div.style.fontWeight = "bold"; 
+//this.div.style.border = "solid red 1px"; 
+this.div.style.position = "relative"; 
+document.getElementById("map").appendChild(this.div); 
+return this.div; 
+}, 
+//DIV下落 
+divDown: function() { 
+var divTop = parseInt(this.div.style.top.slice(0, -2)); //字母方块的Top 
+var mapHeight = parseInt(document.getElementById("map").style.height.slice(0, -2)); 
+//就消失 
+if (divTop < mapHeight - parseInt(this.height) + 20) { 
+this.div.style.top = divTop + 30; 
+//获取按键的值 
+document.onkeydown = function() { 
+//按键的字母是不是 等于 div的值 
+if (String.fromCharCode(event.keyCode) == GAME.div.innerText) { 
+document.getElementById("TextRecord").value = "正确"; 
+GAME.div.style.display = "none"; 
+clearInterval(GAME.timeCreateID); 
+GAME.divCreate(100, 100, Math.floor(Math.random() * 300), -30, GAME.randLetter()); 
+} 
+else { 
+document.getElementById("TextRecord").value = "错误"; 
+} 
+} 
+} 
+//到达底线就消失，之后再创建DIV 
+else { 
+this.div.style.display = "none"; 
+GAME.divCreate(100, 100, Math.floor(Math.random() * 300), -30, this.randLetter()); 
+} 
+}, 
+timeCreateID: null, 
+timeDownID: null, 
+START: function() { 
+this.divCreate(100, 100, 200, -40, this.randLetter()); 
+this.timeDownID = setInterval("GAME.divDown();", 1000); 
+document.getElementById('ButtonStart').disabled = 'disabled'; 
+document.getElementById('ButtonStop').disabled = ''; 
+}, 
+STOP: function() { 
+if (this.timeDownID != null) { 
+clearInterval(this.timeDownID); 
+this.div.style.display = "none"; 
+} 
+document.getElementById('ButtonStart').disabled = ''; 
+document.getElementById('ButtonStop').disabled = 'disabled'; 
+} 
+
+} 
